@@ -1,0 +1,34 @@
+.community {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  color: var(--color-accent);
+  font-size: clamp(0.85rem, 2vw, 1rem);
+}
+
+.title {
+  font-size: clamp(2.6rem, 9vw, 5rem);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.express {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tagline {
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.event {
+  margin-top: 8px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}

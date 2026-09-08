@@ -1,0 +1,26 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.18);
+  border: 1px solid rgba(240, 171, 252, 0.35);
+  font-size: 0.95rem;
+}
+
+.icon {
+  font-size: 1.1rem;
+}
+
+.count {
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+.label {
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+}

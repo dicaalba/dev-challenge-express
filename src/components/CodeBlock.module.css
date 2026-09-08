@@ -1,0 +1,72 @@
+.pre {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  max-width: 640px;
+  text-align: left;
+  padding: 20px 22px;
+  padding-top: 34px;
+  border-radius: var(--radius-md);
+  background: #120825;
+  border: 1.5px solid rgba(240, 171, 252, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  overflow-x: auto;
+}
+
+.code {
+  font-family: 'SFMono-Regular', ui-monospace, 'JetBrains Mono', 'Fira Code',
+    Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+  line-height: 1.6;
+  white-space: pre;
+  color: #e7defb;
+  tab-size: 2;
+}
+
+/* Etiqueta del lenguaje en la esquina superior. */
+.lang {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: inherit;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+/* Tokens: colores con buen contraste sobre fondo oscuro. */
+.keyword {
+  color: #c792ea;
+  font-weight: 600;
+}
+
+.string {
+  color: #7ee787;
+}
+
+.comment {
+  color: #8b7fa8;
+  font-style: italic;
+}
+
+.number {
+  color: #f78c6c;
+}
+
+.function {
+  color: #82aaff;
+}
+
+.operator {
+  color: #ff9cc8;
+}
+
+.punctuation {
+  color: #c9b6e6;
+}
+
+.plain {
+  color: inherit;
+}

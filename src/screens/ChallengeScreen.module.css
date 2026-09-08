@@ -1,0 +1,116 @@
+.meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.type {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 700;
+}
+
+.question {
+  font-size: clamp(1.4rem, 4.2vw, 2.3rem);
+  font-weight: 800;
+  line-height: 1.2;
+  max-width: 24ch;
+  white-space: pre-line;
+}
+
+.options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 620px;
+  display: grid;
+  gap: 12px;
+}
+
+.option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 2px solid rgba(240, 171, 252, 0.18);
+  color: var(--color-text);
+  font-size: clamp(1rem, 2.4vw, 1.15rem);
+  font-weight: 600;
+  transition:
+    transform 0.12s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.option:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-2);
+}
+
+.option:active {
+  transform: scale(0.99);
+}
+
+.optionText {
+  flex: 1;
+}
+
+.optionKey {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-brand);
+  color: #fff;
+  font-weight: 800;
+}
+
+/* Feedback tras seleccionar. No dependemos solo del color: también hay icono ✓/✕. */
+.correct {
+  border-color: var(--color-success);
+  background: rgba(52, 211, 153, 0.16);
+}
+
+.correct .optionKey {
+  background: var(--color-success);
+  color: #04231a;
+}
+
+.incorrect {
+  border-color: var(--color-danger);
+  background: rgba(248, 113, 113, 0.16);
+}
+
+.incorrect .optionKey {
+  background: var(--color-danger);
+  color: #2a0b0b;
+}
+
+.mark {
+  flex: none;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.correct .mark {
+  color: var(--color-success);
+}
+
+.incorrect .mark {
+  color: var(--color-danger);
+}
+
+/* Debug this: enunciado con formato monoespaciado para el código. */
+.question {
+  font-family: inherit;
+}

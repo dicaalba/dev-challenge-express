@@ -1,0 +1,4 @@
+# Copia este archivo a terraform.tfvars y ajusta según tu cuenta/evento.
+aws_region             = "us-east-1"
+project_name           = "dev-challenge-express"
+cloudfront_price_class = "PriceClass_100"

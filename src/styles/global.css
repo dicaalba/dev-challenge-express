@@ -1,0 +1,92 @@
+/* Tokens y estilos globales de Dev Challenge Express.
+   Paleta: morado / violeta / magenta. Alto contraste, orientado a tablet. */
+
+:root {
+  /* Fondo y superficies */
+  --color-bg-0: #140424;
+  --color-bg-1: #1a0b2e;
+  --color-surface: #251043;
+  --color-surface-2: #2f1557;
+
+  /* Acentos de marca */
+  --color-primary: #a855f7; /* violeta */
+  --color-primary-strong: #9333ea;
+  --color-magenta: #ec4899;
+  --color-accent: #f0abfc;
+
+  /* Texto */
+  --color-text: #f5edff;
+  --color-text-muted: #c9b6e6;
+
+  /* Estados */
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+
+  /* Degradado de marca */
+  --gradient-brand: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+
+  /* Tipografía */
+  --font-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial,
+    sans-serif;
+
+  /* Tamaños táctiles (mínimo 48px recomendado) */
+  --touch-target: 56px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --focus-ring: 3px solid var(--color-accent);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background:
+    radial-gradient(1200px 800px at 20% -10%, #3a1568 0%, transparent 60%),
+    radial-gradient(1000px 700px at 110% 10%, #6d1b52 0%, transparent 55%),
+    var(--color-bg-0);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Evita selección accidental por toque en el stand. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Foco visible y consistente para navegación por teclado. */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Respeta usuarios que prefieren menos movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
