@@ -2,7 +2,7 @@ import type { Challenge } from '../../types';
 
 /**
  * Banco de retos — Boss Level 🔥
- * Retos avanzados y combinados. Todos con timeLimit de 60 segundos.
+ * Escenarios avanzados de arquitectura, debugging y resiliencia.
  */
 export const bossChallenges: Challenge[] = [
   {
@@ -11,17 +11,18 @@ export const bossChallenges: Challenge[] = [
     level: 'advanced',
     type: 'architecture',
     question:
-      'Diseña el backend de una app que sube imágenes y las procesa (thumbnails) de forma asíncrona y serverless en AWS. ¿Qué combinación usarías?',
-    answer: 'S3 + evento a Lambda (o vía SQS) para procesar y guardar el resultado en S3',
+      'Diseña una arquitectura serverless para recibir imágenes, generar thumbnails de forma asíncrona y guardar el resultado. ¿Qué usarías?',
+    answer: 'S3 + SQS + Lambda + S3',
     acceptedAnswers: [
       'S3 + Lambda',
-      'S3 event -> Lambda',
       'S3 + SQS + Lambda',
-      'S3 event notification a Lambda',
+      'S3 event -> Lambda',
+      'S3 Event Notification + Lambda',
+      'S3 + EventBridge + Lambda',
     ],
     explanation:
-      'Al subir a S3 se dispara un evento hacia Lambda (directo o vía SQS para desacoplar y reintentar); Lambda genera el thumbnail y lo guarda en S3. Todo serverless y escalable.',
-    keyConcept: 'Arquitectura event-driven serverless',
+      'S3 genera el evento y Lambda procesa la imagen. Introducir una cola puede mejorar desacoplamiento y manejo de reintentos.',
+    keyConcept: 'Event-driven Serverless',
     timeLimit: 60,
   },
   {
@@ -30,17 +31,18 @@ export const bossChallenges: Challenge[] = [
     level: 'advanced',
     type: 'debug',
     question:
-      'Una Lambda detrás de API Gateway funciona en pruebas pero en producción da timeouts intermitentes al llamar a RDS. ¿Causa probable?',
-    answer: 'Agotamiento de conexiones a la base de datos (falta de pooling / RDS Proxy)',
+      'Una Lambda que accede a RDS funciona con poco tráfico, pero empieza a fallar cuando aumenta mucho la concurrencia. ¿Qué problema investigarías primero?',
+    answer: 'Agotamiento de conexiones a RDS',
     acceptedAnswers: [
-      'RDS Proxy',
-      'connection pooling',
+      'connection exhaustion',
       'demasiadas conexiones',
-      'cold start + conexiones',
+      'connection pooling',
+      'RDS Proxy',
+      'agotamiento de conexiones',
     ],
     explanation:
-      'Cada invocación abre conexiones nuevas; con alta concurrencia se agota el límite de conexiones de RDS. RDS Proxy o pooling reutilizan conexiones y evitan el timeout.',
-    keyConcept: 'Lambda + RDS a escala',
+      'Muchas invocaciones concurrentes pueden generar demasiadas conexiones. RDS Proxy ayuda a compartir y administrar conexiones.',
+    keyConcept: 'Lambda + RDS',
     timeLimit: 60,
   },
   {
@@ -49,92 +51,116 @@ export const bossChallenges: Challenge[] = [
     level: 'advanced',
     type: 'open',
     question:
-      '¿Qué patrón evita cascadas de fallos cuando un servicio dependiente está caído, cortando temporalmente las llamadas?',
+      'Un servicio dependiente empieza a fallar repetidamente. ¿Qué patrón evita continuar enviándole requests y provocar una cascada de fallos?',
     answer: 'Circuit Breaker',
-    acceptedAnswers: ['circuit breaker', 'cortocircuito'],
+    acceptedAnswers: [
+      'Circuit Breaker',
+      'circuit breaker',
+      'cortocircuito',
+    ],
     explanation:
-      'El Circuit Breaker abre el circuito tras detectar fallos repetidos, evitando llamadas al servicio caído y dando tiempo a recuperarse.',
-    keyConcept: 'Resiliencia',
+      'Circuit Breaker abre temporalmente el circuito después de detectar fallos repetidos y permite que el sistema dependiente se recupere.',
+    keyConcept: 'Resilience',
     timeLimit: 60,
   },
   {
     id: 'boss-04',
     category: 'boss',
     level: 'advanced',
-    type: 'multiple-choice',
+    type: 'architecture',
     question:
-      'Necesitas consistencia fuerte y transacciones ACID en múltiples filas. ¿Qué opción encaja mejor?',
-    options: [
-      'Base de datos relacional (RDS/Aurora)',
-      'DynamoDB sin diseño previo',
-      'S3',
-      'ElastiCache',
+      'Un endpoint recibe picos enormes de tráfico y el procesamiento es pesado. No quieres perder trabajo ni saturar el backend. ¿Cómo lo desacoplarías?',
+    answer: 'SQS como buffer y consumidores que escalen',
+    acceptedAnswers: [
+      'SQS + Lambda',
+      'SQS + workers',
+      'queue',
+      'buffer con cola',
+      'queue-based load leveling',
     ],
-    answer: 'Base de datos relacional (RDS/Aurora)',
     explanation:
-      'Las bases relacionales ofrecen transacciones ACID y consistencia fuerte de forma natural. DynamoDB soporta transacciones pero requiere un diseño de acceso muy específico.',
-    keyConcept: 'ACID vs NoSQL',
+      'Una cola absorbe el pico de tráfico y permite que los consumidores procesen a una velocidad controlada.',
+    keyConcept: 'Queue-based Load Leveling',
     timeLimit: 60,
   },
   {
     id: 'boss-05',
     category: 'boss',
     level: 'advanced',
-    type: 'architecture',
+    type: 'debug',
     question:
-      'Un endpoint recibe picos enormes de tráfico impredecibles y procesa cada request de forma pesada. ¿Cómo lo proteges sin perder mensajes?',
-    answer: 'Encolar con SQS y procesar con workers/Lambda que escalan según la cola',
-    acceptedAnswers: ['SQS + workers', 'buffer con cola', 'SQS + Lambda', 'queue-based load leveling'],
+      'Desplegaste una nueva versión de tu frontend en S3, pero algunos usuarios siguen recibiendo archivos antiguos desde CloudFront. ¿Qué revisarías?',
+    answer: 'La caché de CloudFront',
+    acceptedAnswers: [
+      'cache',
+      'CloudFront cache',
+      'invalidación',
+      'cache invalidation',
+      'TTL',
+      'versionado de assets',
+    ],
     explanation:
-      'El patrón "queue-based load leveling" amortigua los picos: la cola absorbe el tráfico y los consumidores procesan a su ritmo, evitando saturar el backend.',
-    keyConcept: 'Load leveling',
+      'Los objetos pueden seguir cacheados. Puedes invalidarlos o utilizar nombres/versiones únicas de assets.',
+    keyConcept: 'CDN Caching',
     timeLimit: 60,
   },
   {
     id: 'boss-06',
     category: 'boss',
     level: 'advanced',
-    type: 'debug',
+    type: 'architecture',
     question:
-      'Tras un despliegue, el frontend en CloudFront sigue mostrando la versión vieja pese a subir nuevos archivos a S3. ¿Por qué?',
-    answer: 'La caché de CloudFront no fue invalidada',
-    acceptedAnswers: ['invalidación de caché', 'cache invalidation', 'invalidar CloudFront', 'TTL de caché'],
+      'Un consumidor procesa el mismo mensaje dos veces debido a reintentos. ¿Cómo diseñarías la operación para evitar efectos duplicados?',
+    answer: 'Implementar idempotencia con un identificador único',
+    acceptedAnswers: [
+      'idempotency key',
+      'clave de idempotencia',
+      'idempotencia',
+      'deduplicación',
+    ],
     explanation:
-      'CloudFront cachea los objetos según su TTL. Tras un deploy hay que crear una invalidación (o usar nombres de archivo versionados) para servir la versión nueva.',
-    keyConcept: 'Invalidación de CDN',
+      'Las operaciones deben reconocer reintentos de una misma solicitud y evitar repetir efectos secundarios.',
+    keyConcept: 'Idempotency',
     timeLimit: 60,
   },
   {
     id: 'boss-07',
     category: 'boss',
     level: 'advanced',
-    type: 'open',
+    type: 'architecture',
     question:
-      '¿Qué técnica de despliegue libera una funcionalidad a un pequeño porcentaje de usuarios antes que al resto?',
-    answer: 'Canary release',
-    acceptedAnswers: ['canary', 'despliegue canario', 'canary deployment'],
+      'Tienes varios servicios que necesitan reaccionar independientemente a eventos de negocio. El productor no debería conocer a los consumidores. ¿Qué arquitectura propondrías?',
+    answer: 'Event-driven architecture con EventBridge',
+    acceptedAnswers: [
+      'EventBridge',
+      'Amazon EventBridge',
+      'event-driven architecture',
+      'event bus',
+      'SNS',
+    ],
     explanation:
-      'El canary release expone la nueva versión a un porcentaje reducido de tráfico; si las métricas son buenas, se aumenta gradualmente.',
-    keyConcept: 'Canary release',
+      'Un event bus permite desacoplar productores y consumidores, evolucionando cada componente de forma independiente.',
+    keyConcept: 'Event-driven Architecture',
     timeLimit: 60,
   },
   {
     id: 'boss-08',
     category: 'boss',
     level: 'advanced',
-    type: 'multiple-choice',
+    type: 'debug',
     question:
-      'En un sistema distribuido, el teorema CAP dice que ante una partición de red debes sacrificar:',
-    options: [
-      'Consistencia o Disponibilidad',
-      'Latencia o Costo',
-      'Seguridad o Escalabilidad',
-      'Nada, se puede tener todo',
+      'Una request atraviesa varios microservicios y tarda 5 segundos, pero los logs individuales no muestran claramente dónde está la latencia. ¿Qué implementarías?',
+    answer: 'Distributed tracing',
+    acceptedAnswers: [
+      'distributed tracing',
+      'tracing',
+      'OpenTelemetry',
+      'AWS X-Ray',
+      'X-Ray',
     ],
-    answer: 'Consistencia o Disponibilidad',
     explanation:
-      'El teorema CAP establece que ante una partición (P) hay que elegir entre Consistencia (C) y Disponibilidad (A); no se pueden garantizar ambas simultáneamente.',
-    keyConcept: 'Teorema CAP',
+      'Distributed tracing permite seguir una request de extremo a extremo y localizar la latencia entre servicios.',
+    keyConcept: 'Observability',
     timeLimit: 60,
   },
   {
@@ -143,12 +169,18 @@ export const bossChallenges: Challenge[] = [
     level: 'advanced',
     type: 'architecture',
     question:
-      'Necesitas ejecutar tareas idempotentes que pueden reintentarse sin efectos duplicados. ¿Qué garantizas en su diseño?',
-    answer: 'Idempotencia mediante una clave/identificador único de operación',
-    acceptedAnswers: ['idempotency key', 'clave de idempotencia', 'operación idempotente'],
+      'Necesitas desplegar una nueva versión de una API reduciendo el riesgo y pudiendo regresar rápidamente a la versión anterior. ¿Qué estrategia usarías?',
+    answer: 'Blue/Green o Canary Deployment',
+    acceptedAnswers: [
+      'blue green',
+      'blue/green',
+      'canary',
+      'canary deployment',
+      'canary release',
+    ],
     explanation:
-      'Usar una idempotency key permite detectar reintentos y aplicar la operación una sola vez, evitando duplicados en entregas "at-least-once".',
-    keyConcept: 'Idempotencia',
+      'Blue/Green facilita rollback rápido; Canary reduce riesgo exponiendo gradualmente la nueva versión.',
+    keyConcept: 'Deployment Strategy',
     timeLimit: 60,
   },
   {
@@ -157,12 +189,59 @@ export const bossChallenges: Challenge[] = [
     level: 'advanced',
     type: 'debug',
     question:
-      'Un LLM en producción responde con datos desactualizados pese a que la info existe en tus documentos. ¿Qué revisarías primero?',
-    answer: 'El pipeline de RAG: indexación/recuperación de los documentos',
-    acceptedAnswers: ['RAG', 'indexación de embeddings', 'recuperación de contexto', 'reindexar documentos'],
+      'Tu aplicación RAG responde con información antigua aunque los documentos fuente ya fueron actualizados. ¿Qué componentes revisarías?',
+    answer: 'Ingesta, chunking, embeddings, indexación y retrieval',
+    acceptedAnswers: [
+      'RAG',
+      'reindexar',
+      'embeddings',
+      'vector store',
+      'retrieval',
+      'indexación',
+      'pipeline de RAG',
+    ],
     explanation:
-      'Si el contexto correcto no llega al modelo, revisa el pipeline RAG: que los documentos estén indexados como embeddings y que la recuperación traiga los fragmentos relevantes.',
-    keyConcept: 'Depuración de RAG',
+      'El problema puede estar entre la actualización del documento y su incorporación al índice o en cómo se recupera el contexto.',
+    keyConcept: 'RAG Troubleshooting',
+    timeLimit: 60,
+  },
+  {
+    id: 'boss-11',
+    category: 'boss',
+    level: 'advanced',
+    type: 'architecture',
+    question:
+      'Una aplicación en EKS necesita acceder a S3. No quieres Access Keys dentro de Secrets o variables de entorno. ¿Qué enfoque usarías?',
+    answer: 'IAM Role asociado al workload mediante EKS Pod Identity o mecanismo equivalente',
+    acceptedAnswers: [
+      'EKS Pod Identity',
+      'Pod Identity',
+      'IRSA',
+      'IAM Role',
+      'IAM role for service account',
+    ],
+    explanation:
+      'La aplicación debería recibir credenciales temporales asociadas a su identidad de workload en lugar de credenciales estáticas.',
+    keyConcept: 'Workload Identity',
+    timeLimit: 60,
+  },
+  {
+    id: 'boss-12',
+    category: 'boss',
+    level: 'advanced',
+    type: 'architecture',
+    question:
+      'Un sistema procesa eventos con entrega at-least-once. ¿Qué propiedad debería tener el consumidor para soportar duplicados?',
+    answer: 'Ser idempotente',
+    acceptedAnswers: [
+      'idempotencia',
+      'idempotente',
+      'idempotent consumer',
+      'deduplicación',
+    ],
+    explanation:
+      'En sistemas at-least-once pueden existir duplicados, por lo que los consumidores deben manejarlos sin repetir efectos.',
+    keyConcept: 'Distributed Systems',
     timeLimit: 60,
   },
 ];
