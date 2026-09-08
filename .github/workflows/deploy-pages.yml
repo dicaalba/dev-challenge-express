@@ -42,9 +42,8 @@ jobs:
         run: npm test
 
       - name: Build
-        # base = "/<nombre-del-repo>/" para que los assets carguen en el subpath.
-        env:
-          VITE_BASE: /${{ github.event.repository.name }}/
+        # base relativo ('./'): funciona tanto en subpath de Pages como en un
+        # dominio personalizado servido en la raíz.
         run: npm run build
 
       - name: Configurar Pages

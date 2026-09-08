@@ -4,12 +4,13 @@ import react from '@vitejs/plugin-react';
 
 // Configuración de Vite + Vitest.
 //
-// `base` es configurable por entorno para servir el mismo código en distintos
-// destinos:
-//   - S3 + CloudFront y desarrollo local -> raíz ('/') (valor por defecto).
-//   - GitHub Pages de proyecto -> subpath ('/dev-challenge-express/'), que el
-//     workflow inyecta vía la variable de entorno VITE_BASE.
-const base = process.env.VITE_BASE ?? '/';
+// `base` usa rutas relativas ('./') por defecto para que el mismo build
+// funcione sin cambios en cualquier destino:
+//   - Dominio personalizado en la raíz (ej. ruleta.awsgirlsperu.com/).
+//   - GitHub Pages de proyecto en subpath (usuario.github.io/repo/).
+//   - S3 + CloudFront y desarrollo local.
+// Se puede sobrescribir con VITE_BASE si algún despliegue necesita un base fijo.
+const base = process.env.VITE_BASE ?? './';
 
 export default defineConfig({
   plugins: [react()],
