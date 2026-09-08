@@ -286,6 +286,23 @@ La URL pública está en el output `cloudfront_domain`.
 > Requiere credenciales de AWS configuradas y aplicar Terraform crea recursos
 > facturables en tu cuenta.
 
+### Alternativa gratuita: GitHub Pages
+
+El repo incluye un workflow (`.github/workflows/deploy-pages.yml`) que en cada
+push a `main` corre los tests, compila y publica en GitHub Pages.
+
+Activación (una sola vez, la hace el dueño del repo):
+
+1. En GitHub: **Settings → Pages → Build and deployment → Source: "GitHub Actions"**.
+2. Hacer push a `main` (o lanzar el workflow desde la pestaña **Actions**).
+
+La app queda disponible en `https://<usuario>.github.io/<repo>/`
+(por ejemplo `https://dicaalba.github.io/dev-challenge-express/`).
+
+> Como Pages sirve la app en un subpath, el workflow compila con
+> `VITE_BASE=/<repo>/` para que los assets carguen bien. El build por defecto
+> (S3/CloudFront y desarrollo local) sigue usando la raíz `/`.
+
 ---
 
 ## Evolución futura (preparado, no implementado)
